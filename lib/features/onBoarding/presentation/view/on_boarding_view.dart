@@ -60,7 +60,7 @@ class OnBoardingView extends StatelessWidget {
                         Navigator.of(
                           context,
                           rootNavigator: true,
-                        ).pushNamed(AppRoutes.login);
+                        ).pushReplacementNamed(AppRoutes.login);
                       },
                       style: TextButton.styleFrom(
                         backgroundColor: Colors.white,

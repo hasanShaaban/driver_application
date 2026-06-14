@@ -8,6 +8,9 @@
 // dart format off
 
 class Assets {
+  static const String iconsPassword = 'assets/icons/password.svg';
+  static const String iconsPhone = 'assets/icons/phone.svg';
+  static const String iconsShowPassword = 'assets/icons/show_password.svg';
   static const String imagesAuthImage = 'assets/images/auth_image.png';
   static const String imagesOnBoarding = 'assets/images/on_boarding.png';
 }
