@@ -6,6 +6,26 @@ abstract class AppTextStyle {
     fontFamily: 'Zahir',
     fontWeight: FontWeight.w700,
   );
+  static const TextStyle bold14 = TextStyle(
+    fontSize: 14,
+    fontFamily: 'Zahir',
+    fontWeight: FontWeight.w700,
+  );
+  static const TextStyle medium12 = TextStyle(
+    fontSize: 12,
+    fontFamily: 'Zahir',
+    fontWeight: FontWeight.w500,
+  );
+  static const TextStyle medium14 = TextStyle(
+    fontSize: 14,
+    fontFamily: 'Zahir',
+    fontWeight: FontWeight.w500,
+  );
+  static const TextStyle medium16 = TextStyle(
+    fontSize: 16,
+    fontFamily: 'Zahir',
+    fontWeight: FontWeight.w500,
+  );
   static const TextStyle bold24 = TextStyle(
     fontSize: 24,
     fontFamily: 'Zahir',
@@ -20,6 +40,11 @@ abstract class AppTextStyle {
     fontSize: 16,
     fontFamily: 'Zahir',
     fontWeight: FontWeight.w400,
+  );
+  static const TextStyle semiBold10 = TextStyle(
+    fontSize: 10,
+    fontFamily: 'Zahir',
+    fontWeight: FontWeight.w600,
   );
   static const TextStyle regular18 = TextStyle(
     fontSize: 18,

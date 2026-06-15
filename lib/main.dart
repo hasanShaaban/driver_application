@@ -14,6 +14,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        useMaterial3: false,
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: AppBarTheme(backgroundColor: Colors.white),
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: Colors.white,
+        ),
+        fontFamily: 'Zahir',
+      ),
+
       locale: const Locale('ar'),
       localizationsDelegates: const [
         S.delegate,
@@ -28,4 +38,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
