@@ -1,6 +1,8 @@
 import 'package:driver_application/core/utils/app_colors.dart';
 import 'package:driver_application/core/utils/app_text_style.dart';
 import 'package:driver_application/features/home/presentation/view/widgets/home_page.dart';
+import 'package:driver_application/features/home/presentation/view/widgets/my_orders_pagge.dart';
+import 'package:driver_application/features/Profile/presentation/view/profile_page.dart';
 import 'package:driver_application/generated/assets.dart';
 
 import 'package:flutter/material.dart';
@@ -16,18 +18,22 @@ class HomeView extends StatefulWidget {
 class _HomeViewState extends State<HomeView> {
   int _currentIndex = 0;
 
-  final List<Widget> _pages = const [
-    HomePage(),
-    Center(child: Text('رحلاتي')),
-    Center(child: Text('الملف الشخصي')),
-  ];
+  final List<Widget> _pages = const [HomePage(), MyOrdersPage(), ProfilePage()];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: _currentIndex == 1
+            ? Text(
+                'رحلاتي',
+                style: AppTextStyle.semiBold20.copyWith(color: Colors.black),
+              )
+            : null,
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: _currentIndex == 2
+            ? AppColors.appBarColor
+            : Colors.white,
         leading: Icon(
           Icons.notifications,
           size: 26,
