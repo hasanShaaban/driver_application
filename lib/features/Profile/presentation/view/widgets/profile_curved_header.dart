@@ -21,16 +21,10 @@ class _DownwardArcClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
-    path.lineTo(0, 0); // top-left
-    path.lineTo(size.width, 0); // top-right
-    path.lineTo(size.width, size.height * 0.4); // right side down
-    // Quadratic bezier: control point pushes the midpoint downward
-    path.quadraticBezierTo(
-      size.width / 2,
-      size.height, // control point (bottom-center bulge)
-      0,
-      size.height * 0.4, // end point (left side)
-    );
+    path.lineTo(0, 0);
+    path.lineTo(size.width, 0);
+    path.lineTo(size.width, size.height * 0.4);
+    path.quadraticBezierTo(size.width / 2, size.height, 0, size.height * 0.4);
     path.close();
     return path;
   }

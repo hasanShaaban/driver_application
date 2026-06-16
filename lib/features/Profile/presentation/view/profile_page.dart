@@ -1,3 +1,4 @@
+import 'package:driver_application/core/utils/app_routes.dart';
 import 'package:driver_application/core/utils/app_text_style.dart';
 import 'package:driver_application/features/Profile/presentation/view/widgets/profile_container.dart';
 import 'package:driver_application/features/Profile/presentation/view/widgets/profile_curved_header.dart';
@@ -33,6 +34,7 @@ class ProfilePage extends StatelessWidget {
                 ProfileContainer(
                   content: [
                     NonFunctionalProfileRow(
+                      onTap: () {},
                       text: 'معلومات شخصية',
                       icon: Assets.iconsProfileInfo,
                     ),
@@ -54,10 +56,14 @@ class ProfilePage extends StatelessWidget {
                 ProfileContainer(
                   content: [
                     NonFunctionalProfileRow(
+                      onTap: () {},
                       text: 'الأرباح',
                       icon: Assets.iconsProfits,
                     ),
                     NonFunctionalProfileRow(
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutes.myRate);
+                      },
                       text: 'تقييماتي',
                       icon: Assets.iconsStar,
                     ),
@@ -67,14 +73,17 @@ class ProfilePage extends StatelessWidget {
                 ProfileContainer(
                   content: [
                     NonFunctionalProfileRow(
+                      onTap: () {},
                       text: 'Help & Support',
                       icon: Assets.iconsHelpSupport,
                     ),
                     NonFunctionalProfileRow(
+                      onTap: () {},
                       text: 'Contact us',
                       icon: Assets.iconsContactUs,
                     ),
                     NonFunctionalProfileRow(
+                      onTap: () {},
                       text: 'Privacy policy',
                       icon: Assets.iconsPrivacy,
                     ),

@@ -44,16 +44,19 @@ class NonFunctionalProfileRow extends StatelessWidget {
     super.key,
     required this.text,
     required this.icon,
+    required this.onTap,
   });
 
   final String text;
   final String icon;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
+        onTap: onTap,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [

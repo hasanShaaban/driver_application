@@ -10,6 +10,7 @@
 class Assets {
   static const String iconsContactUs = 'assets/icons/contact_us.svg';
   static const String iconsEditLine = 'assets/icons/edit-line.svg';
+  static const String iconsFilledStar = 'assets/icons/filled_star.svg';
   static const String iconsHelpSupport = 'assets/icons/help_support.svg';
   static const String iconsHomeActive = 'assets/icons/home_active.svg';
   static const String iconsHomeInactive = 'assets/icons/home_inactive.svg';

@@ -1,3 +1,4 @@
+import 'package:driver_application/features/Profile/presentation/view/my_rate_view.dart';
 import 'package:flutter/material.dart';
 import '../utils/app_routes.dart';
 import '../../features/onBoarding/presentation/view/on_boarding_view.dart';
@@ -21,12 +22,15 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
         builder: (context) => const HomeView(),
         settings: settings,
       );
+    case AppRoutes.myRate:
+      return MaterialPageRoute(
+        builder: (context) => const MyRateView(),
+        settings: settings,
+      );
     default:
       return MaterialPageRoute(
         builder: (context) => Scaffold(
-          body: Center(
-            child: Text('No route defined for ${settings.name}'),
-          ),
+          body: Center(child: Text('No route defined for ${settings.name}')),
         ),
         settings: settings,
       );
