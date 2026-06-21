@@ -11,6 +11,11 @@ abstract class AppTextStyle {
     fontFamily: 'Zahir',
     fontWeight: FontWeight.w700,
   );
+  static const TextStyle bold15 = TextStyle(
+    fontSize: 15,
+    fontFamily: 'Zahir',
+    fontWeight: FontWeight.w700,
+  );
   static const TextStyle medium12 = TextStyle(
     fontSize: 12,
     fontFamily: 'Zahir',

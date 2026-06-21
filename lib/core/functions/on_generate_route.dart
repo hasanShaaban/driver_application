@@ -1,4 +1,6 @@
 import 'package:driver_application/features/Profile/presentation/view/my_rate_view.dart';
+import 'package:driver_application/features/Profile/presentation/view/profile_info_view.dart';
+import 'package:driver_application/features/Profile/presentation/view/profits_view.dart';
 import 'package:flutter/material.dart';
 import '../utils/app_routes.dart';
 import '../../features/onBoarding/presentation/view/on_boarding_view.dart';
@@ -25,6 +27,16 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
     case AppRoutes.myRate:
       return MaterialPageRoute(
         builder: (context) => const MyRateView(),
+        settings: settings,
+      );
+    case AppRoutes.profileInfo:
+      return MaterialPageRoute(
+        builder: (context) => const ProfileInfoView(),
+        settings: settings,
+      );
+    case AppRoutes.profits:
+      return MaterialPageRoute(
+        builder: (context) => const ProfitsView(),
         settings: settings,
       );
     default:

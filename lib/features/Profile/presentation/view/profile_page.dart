@@ -34,7 +34,9 @@ class ProfilePage extends StatelessWidget {
                 ProfileContainer(
                   content: [
                     NonFunctionalProfileRow(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutes.profileInfo);
+                      },
                       text: 'معلومات شخصية',
                       icon: Assets.iconsProfileInfo,
                     ),
@@ -56,7 +58,9 @@ class ProfilePage extends StatelessWidget {
                 ProfileContainer(
                   content: [
                     NonFunctionalProfileRow(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutes.profits);
+                      },
                       text: 'الأرباح',
                       icon: Assets.iconsProfits,
                     ),
