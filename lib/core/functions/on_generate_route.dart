@@ -1,6 +1,8 @@
+import 'package:driver_application/features/Order/presentation/view/order_info_view.dart';
 import 'package:driver_application/features/Profile/presentation/view/my_rate_view.dart';
 import 'package:driver_application/features/Profile/presentation/view/profile_info_view.dart';
 import 'package:driver_application/features/Profile/presentation/view/profits_view.dart';
+import 'package:driver_application/features/home/presentation/view/notifications_view.dart';
 import 'package:flutter/material.dart';
 import '../utils/app_routes.dart';
 import '../../features/onBoarding/presentation/view/on_boarding_view.dart';
@@ -37,6 +39,16 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
     case AppRoutes.profits:
       return MaterialPageRoute(
         builder: (context) => const ProfitsView(),
+        settings: settings,
+      );
+    case AppRoutes.notifications:
+      return MaterialPageRoute(
+        builder: (context) => const NotificationsView(),
+        settings: settings,
+      );
+    case AppRoutes.orderInfo:
+      return MaterialPageRoute(
+        builder: (context) => const OrderInfoView(),
         settings: settings,
       );
     default:

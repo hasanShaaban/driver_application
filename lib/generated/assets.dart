@@ -14,6 +14,7 @@ class Assets {
   static const String iconsHelpSupport = 'assets/icons/help_support.svg';
   static const String iconsHomeActive = 'assets/icons/home_active.svg';
   static const String iconsHomeInactive = 'assets/icons/home_inactive.svg';
+  static const String iconsIncommingNotification = 'assets/icons/incomming_notification.svg';
   static const String iconsLanguage = 'assets/icons/language.svg';
   static const String iconsMenu = 'assets/icons/menu.png';
   static const String iconsNotifications = 'assets/icons/notifications.png';

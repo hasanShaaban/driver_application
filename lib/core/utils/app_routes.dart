@@ -5,4 +5,6 @@ class AppRoutes {
   static const String myRate = '/myRate';
   static const String profileInfo = '/profileInfo';
   static const String profits = '/profits';
+  static const String notifications = '/notifications';
+  static const String orderInfo = '/orderInfo';
 }

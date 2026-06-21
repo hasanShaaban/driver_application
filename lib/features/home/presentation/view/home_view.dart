@@ -1,4 +1,5 @@
 import 'package:driver_application/core/utils/app_colors.dart';
+import 'package:driver_application/core/utils/app_routes.dart';
 import 'package:driver_application/core/utils/app_text_style.dart';
 import 'package:driver_application/features/home/presentation/view/widgets/home_page.dart';
 import 'package:driver_application/features/home/presentation/view/widgets/my_orders_pagge.dart';
@@ -34,10 +35,15 @@ class _HomeViewState extends State<HomeView> {
         backgroundColor: _currentIndex == 2
             ? AppColors.appBarColor
             : Colors.white,
-        leading: Icon(
-          Icons.notifications,
-          size: 26,
-          color: AppColors.primaryColor,
+        leading: InkWell(
+          onTap: () {
+            Navigator.pushNamed(context, AppRoutes.notifications);
+          },
+          child: Icon(
+            Icons.notifications,
+            size: 26,
+            color: AppColors.primaryColor,
+          ),
         ),
         actions: [
           Padding(

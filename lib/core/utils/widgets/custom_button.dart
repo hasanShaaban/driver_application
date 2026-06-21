@@ -22,7 +22,7 @@ class CustomButton extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Text(
-            'تسجيل الدخول',
+            text,
             style: AppTextStyle.regular16.copyWith(color: Colors.white),
           ),
         ),

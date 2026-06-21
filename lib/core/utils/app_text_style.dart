@@ -56,6 +56,11 @@ abstract class AppTextStyle {
     fontFamily: 'Zahir',
     fontWeight: FontWeight.w600,
   );
+  static const TextStyle semiBold16 = TextStyle(
+    fontSize: 16,
+    fontFamily: 'Zahir',
+    fontWeight: FontWeight.w600,
+  );
   static const TextStyle semiBold20 = TextStyle(
     fontSize: 20,
     fontFamily: 'Zahir',
