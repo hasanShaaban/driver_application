@@ -1,15 +1,32 @@
+import 'package:driver_application/features/home/presentation/view/home_view.dart';
+import 'package:driver_application/features/onBoarding/presentation/view/on_boarding_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:driver_application/features/Auth/data/data_sources/auth_local_data_source.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'core/functions/on_generate_route.dart';
-import 'core/utils/app_routes.dart';
 import 'generated/l10n.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'core/utils/service_locator.dart';
+import 'core/storage/app_storage.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  setupServiceLocator();
+  await Hive.initFlutter();
+  await getIt.get<AppStorage>().init();
+
+  final authLocalDataSource = getIt.get<AuthLocalDataSource>();
+  final loginData = authLocalDataSource.getLoginData();
+  final bool isLoggedIn =
+      loginData != null && loginData.data.accessToken.isNotEmpty;
+
+  runApp(MyApp(isLoggedIn: isLoggedIn));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isLoggedIn;
+  const MyApp({super.key, required this.isLoggedIn});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +51,11 @@ class MyApp extends StatelessWidget {
       supportedLocales: S.delegate.supportedLocales,
       debugShowCheckedModeBanner: false,
       onGenerateRoute: onGenerateRoute,
-      initialRoute: AppRoutes.onBoarding,
+      // Using `home` instead of `initialRoute` so Flutter does NOT silently
+      // push '/' (OnBoardingView) underneath the HomeView when the user is
+      // already logged in. With `initialRoute: '/home'`, Flutter would push
+      // '/' first, leaving OnBoardingView in the back-stack.
+      home: isLoggedIn ? const HomeView() : const OnBoardingView(),
     );
   }
 }

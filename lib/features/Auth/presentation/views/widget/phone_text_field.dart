@@ -5,13 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class PhoneTextField extends StatelessWidget {
-  const PhoneTextField({super.key});
+  final TextEditingController? controller;
+  const PhoneTextField({super.key, this.controller});
 
   @override
   Widget build(BuildContext context) {
     return TextField(
+      controller: controller,
       onTapOutside: (event) => FocusManager.instance.primaryFocus?.unfocus(),
-      keyboardType: TextInputType.number,
+      keyboardType: TextInputType.text,
       textDirection: TextDirection.rtl,
       textAlign: TextAlign.right,
       decoration: InputDecoration(
