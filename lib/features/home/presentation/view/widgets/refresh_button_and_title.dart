@@ -1,6 +1,8 @@
 import 'package:driver_application/core/utils/app_colors.dart';
 import 'package:driver_application/core/utils/app_text_style.dart';
+import 'package:driver_application/features/home/presentation/manager/available_shipments_cubit/available_shipments_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RefreshButtonAndTitle extends StatefulWidget {
   const RefreshButtonAndTitle({super.key});
@@ -36,6 +38,7 @@ class _RefreshButtonAndTitleState extends State<RefreshButtonAndTitle>
     if (!_controller.isAnimating) {
       _controller.forward(from: 0.0);
     }
+    context.read<AvailableShipmentsCubit>().fetchAvailableShipments();
   }
 
   @override
