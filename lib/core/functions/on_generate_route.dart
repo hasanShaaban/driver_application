@@ -1,7 +1,9 @@
+import 'package:driver_application/features/Order/presentation/view/map_view.dart';
 import 'package:driver_application/features/Order/presentation/view/order_info_view.dart';
 import 'package:driver_application/features/Profile/presentation/view/my_rate_view.dart';
 import 'package:driver_application/features/Profile/presentation/view/profile_info_view.dart';
 import 'package:driver_application/features/Profile/presentation/view/profits_view.dart';
+import 'package:driver_application/features/home/data/models/shipments_response_model.dart';
 import 'package:driver_application/features/home/presentation/view/notifications_view.dart';
 import 'package:flutter/material.dart';
 import '../utils/app_routes.dart';
@@ -47,8 +49,23 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
         settings: settings,
       );
     case AppRoutes.orderInfo:
+      final args = settings.arguments as Map<String, Shipment>;
       return MaterialPageRoute(
-        builder: (context) => const OrderInfoView(),
+        builder: (context) =>
+            OrderInfoView(shipment: args['shipment'] as Shipment),
+        settings: settings,
+      );
+    case AppRoutes.map:
+      final args = settings.arguments as Map<String, dynamic>;
+      return MaterialPageRoute(
+        builder: (context) => MapView(
+          id: args['id'] as int,
+          pickupLat: args['pickupLat'] as String,
+          pickupLng: args['pickupLng'] as String,
+          destinationLat: args['destinationLat'] as String,
+          destinationLng: args['destinationLng'] as String,
+          initialLocation: args['initialLocation'] as String,
+        ),
         settings: settings,
       );
     default:

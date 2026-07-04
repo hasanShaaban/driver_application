@@ -33,7 +33,7 @@ class AvailableShipmentsListView extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               itemBuilder: (context, index) {
                 if (index < shipments.length) {
-                  return const OrderCard();
+                  return OrderCard(shipment: shipments[index]);
                 } else {
                   if (state is AvailableShipmentsPaginationLoading) {
                     return const Padding(

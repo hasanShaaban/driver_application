@@ -1,11 +1,15 @@
 import 'package:driver_application/core/utils/app_colors.dart';
+import 'package:driver_application/core/utils/app_routes.dart';
 import 'package:driver_application/core/utils/app_text_style.dart';
+import 'package:driver_application/core/utils/date_formatter.dart';
 import 'package:driver_application/core/utils/widgets/custom_button.dart';
 import 'package:driver_application/features/Order/presentation/view/widgets/order_number_container.dart';
+import 'package:driver_application/features/home/data/models/shipments_response_model.dart';
 import 'package:flutter/material.dart';
 
 class OrderInfoView extends StatelessWidget {
-  const OrderInfoView({super.key});
+  const OrderInfoView({super.key, required this.shipment});
+  final Shipment shipment;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +45,10 @@ class OrderInfoView extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              OrderNumberContainer(),
+              OrderNumberContainer(
+                id: shipment.id,
+                date: DateFormatter.formatDate(shipment.createdAt),
+              ),
               Divider(thickness: 1),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 13, vertical: 11),
@@ -89,20 +96,58 @@ class OrderInfoView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('تفاصيل الطلب', style: AppTextStyle.semiBold16),
-                    OrderInfoRow(title: 'تاريخ المهمة', data: '1/1/2025'),
-                    OrderInfoRow(title: 'وقت المهمة', data: '10:30'),
+                    OrderInfoRow(
+                      title: 'تاريخ المهمة',
+                      data: DateFormatter.formatDate(shipment.pickupAt),
+                    ),
+                    OrderInfoRow(
+                      title: 'وقت المهمة',
+                      data: DateFormatter.formatTime(shipment.pickupAt),
+                    ),
                     OrderInfoRow(
                       title: 'موقع التحميل',
                       data: 'عرض التفاصيل',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.map,
+                          arguments: {
+                            'id': shipment.id,
+                            'pickupLat': shipment.route.pickupLat,
+                            'pickupLng': shipment.route.pickupLon,
+                            'destinationLat': shipment.route.deliveryLat,
+                            'destinationLng': shipment.route.deliveryLon,
+                            'initialLocation': 'pickup',
+                          },
+                        );
+                      },
                     ),
                     OrderInfoRow(
                       title: 'موقع التنزيل',
                       data: 'عرض التفاصيل',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.map,
+                          arguments: {
+                            'id': shipment.id,
+                            'pickupLat': shipment.route.pickupLat,
+                            'pickupLng': shipment.route.pickupLon,
+                            'destinationLat': shipment.route.deliveryLat,
+                            'destinationLng': shipment.route.deliveryLon,
+                            'initialLocation': 'destination',
+                          },
+                        );
+                      },
                     ),
-                    OrderInfoRow(title: 'نوع الحمولة', data: 'معلبات'),
-                    OrderInfoRow(title: 'المسافة', data: '20KM'),
+                    OrderInfoRow(
+                      title: 'نوع الحمولة',
+                      data: shipment.goodsType,
+                    ),
+                    OrderInfoRow(
+                      title: 'المسافة',
+                      data: '${shipment.route.distance.toString()} km',
+                    ),
                     OrderInfoRow(
                       title: 'عرض الصور',
                       data: 'عرض الصور',

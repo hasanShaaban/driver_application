@@ -4,8 +4,9 @@ import 'package:driver_application/generated/assets.dart';
 import 'package:flutter/material.dart';
 
 class OrderNumberContainer extends StatelessWidget {
-  const OrderNumberContainer({super.key});
-
+  const OrderNumberContainer({super.key, required this.id, required this.date});
+  final int id;
+  final String date;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -34,11 +35,11 @@ class OrderNumberContainer extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'طلب رقم 501',
+                  'طلب رقم $id',
                   style: AppTextStyle.medium16.copyWith(color: Colors.black54),
                 ),
                 Text(
-                  '2025/1/1',
+                  date,
                   style: AppTextStyle.medium16.copyWith(color: Colors.black54),
                 ),
               ],

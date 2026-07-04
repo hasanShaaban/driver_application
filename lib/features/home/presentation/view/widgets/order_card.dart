@@ -1,11 +1,14 @@
 import 'package:driver_application/core/utils/app_colors.dart';
 import 'package:driver_application/core/utils/app_routes.dart';
 import 'package:driver_application/core/utils/app_text_style.dart';
+import 'package:driver_application/core/utils/date_formatter.dart';
+import 'package:driver_application/features/home/data/models/shipments_response_model.dart';
 import 'package:driver_application/generated/assets.dart';
 import 'package:flutter/material.dart';
 
 class OrderCard extends StatelessWidget {
-  const OrderCard({super.key});
+  const OrderCard({super.key, required this.shipment});
+  final Shipment shipment;
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +16,11 @@ class OrderCard extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
-          Navigator.pushNamed(context, AppRoutes.orderInfo);
+          Navigator.pushNamed(
+            context,
+            AppRoutes.orderInfo,
+            arguments: {'shipment': shipment},
+          );
         },
         child: Container(
           width: double.infinity,
@@ -44,11 +51,14 @@ class OrderCard extends StatelessWidget {
                       children: [
                         Column(
                           children: [
-                            Text('طلب رقم 501', style: AppTextStyle.medium16),
                             Text(
-                              'وقت الطلب 03:15',
+                              'طلب رقم ${shipment.id}',
+                              style: AppTextStyle.medium16,
+                            ),
+                            Text(
+                              'وقت الطلب ${DateFormatter.formatTime(shipment.pickupAt)}',
                               style: AppTextStyle.medium12.copyWith(
-                                color: Colors.grey,
+                                color: AppColors.seconderyColor,
                               ),
                             ),
                           ],
@@ -83,7 +93,7 @@ class OrderCard extends StatelessWidget {
                           size: 16,
                         ),
                         Text(
-                          '800m (5mins away)',
+                          '${shipment.route.distance.toString()}km (${shipment.route.durationMinutes.toString()} min)',
                           style: AppTextStyle.medium12.copyWith(
                             color: Colors.black87,
                           ),
@@ -94,7 +104,7 @@ class OrderCard extends StatelessWidget {
                       children: [
                         Image.asset(Assets.iconsSchedule),
                         Text(
-                          'تاريخ الطلب :1/1/2026',
+                          'تاريخ الطلب : ${DateFormatter.formatDate(shipment.pickupAt)}',
                           style: AppTextStyle.medium14.copyWith(
                             color: Colors.black87,
                           ),
