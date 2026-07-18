@@ -7,5 +7,6 @@ class AppRoutes {
   static const String profits = '/profits';
   static const String notifications = '/notifications';
   static const String orderInfo = '/orderInfo';
+  static const String shipmentImages = '/shipmentImages';
   static const String map = '/map';
 }

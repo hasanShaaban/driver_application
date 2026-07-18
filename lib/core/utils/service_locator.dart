@@ -9,6 +9,8 @@ import 'package:driver_application/features/home/data/repo/home_repo_impl.dart';
 import 'package:driver_application/features/home/domain/repo/home_repo.dart';
 import 'package:driver_application/features/Order/data/repo/order_repo_impl.dart';
 import 'package:driver_application/features/Order/domain/repo/order_repo.dart';
+import 'package:driver_application/features/Profile/data/repo/profile_repo_impl.dart';
+import 'package:driver_application/features/Profile/domain/profile_repo.dart';
 import 'package:get_it/get_it.dart';
 
 final getIt = GetIt.instance;
@@ -27,4 +29,10 @@ void setupServiceLocator() {
   );
   getIt.registerSingleton<HomeRepo>(HomeRepoImpl(getIt.get<ApiService>()));
   getIt.registerSingleton<OrderRepo>(OrderRepoImpl(getIt.get<ApiService>()));
+  getIt.registerSingleton<ProfileRepo>(
+    ProfileRepoImpl(
+      apiService: getIt.get<ApiService>(),
+      authLocalDataSource: getIt.get<AuthLocalDataSource>(),
+    ),
+  );
 }

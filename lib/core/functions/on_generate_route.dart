@@ -10,6 +10,10 @@ import '../utils/app_routes.dart';
 import '../../features/onBoarding/presentation/view/on_boarding_view.dart';
 import '../../features/Auth/presentation/views/login_view.dart';
 import '../../features/home/presentation/view/home_view.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../utils/service_locator.dart';
+import '../../features/Profile/domain/profile_repo.dart';
+import '../../features/Profile/presentation/manager/ratings_cubit/ratings_cubit.dart';
 
 Route<dynamic> onGenerateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -30,7 +34,11 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
       );
     case AppRoutes.myRate:
       return MaterialPageRoute(
-        builder: (context) => const MyRateView(),
+        builder: (context) => BlocProvider(
+          create: (context) =>
+              RatingsCubit(getIt.get<ProfileRepo>())..fetchRatings(),
+          child: const MyRateView(),
+        ),
         settings: settings,
       );
     case AppRoutes.profileInfo:
@@ -53,6 +61,13 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
       return MaterialPageRoute(
         builder: (context) =>
             OrderInfoView(shipment: args['shipment'] as Shipment),
+        settings: settings,
+      );
+    case AppRoutes.shipmentImages:
+      final args = settings.arguments as Map<String, dynamic>;
+      return MaterialPageRoute(
+        builder: (context) =>
+            ShipmentImagesView(images: args['images'] as List<String>),
         settings: settings,
       );
     case AppRoutes.map:

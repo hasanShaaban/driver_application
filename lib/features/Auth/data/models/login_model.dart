@@ -18,16 +18,13 @@ class LoginModel {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'status': status,
-      'message': message,
-      'data': data.toJson(),
-    };
+    return {'status': status, 'message': message, 'data': data.toJson()};
   }
 }
 
 class LoginData {
   final int id;
+  final int uid;
   final String? username;
   final String role;
   final String accessToken;
@@ -35,6 +32,7 @@ class LoginData {
 
   const LoginData({
     required this.id,
+    required this.uid,
     this.username,
     required this.role,
     required this.accessToken,
@@ -44,6 +42,7 @@ class LoginData {
   factory LoginData.fromJson(Map<String, dynamic> json) {
     return LoginData(
       id: json['id'] as int,
+      uid: json['uid'] as int,
       username: json['username'] as String?,
       role: json['role'] as String,
       accessToken: json['access_token'] as String,
@@ -54,6 +53,7 @@ class LoginData {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'uid': uid,
       'username': username,
       'role': role,
       'access_token': accessToken,

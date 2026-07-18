@@ -149,9 +149,19 @@ class OrderInfoView extends StatelessWidget {
                       data: '${shipment.route.distance.toString()} km',
                     ),
                     OrderInfoRow(
-                      title: 'عرض الصور',
-                      data: 'عرض الصور',
-                      onTap: () {},
+                      title: 'الصور',
+                      data: shipment.mediaUrls.isEmpty
+                          ? 'لا توجد صور'
+                          : 'عرض الصور',
+                      onTap: () {
+                        if (shipment.mediaUrls.isNotEmpty) {
+                          Navigator.pushNamed(
+                            context,
+                            AppRoutes.shipmentImages,
+                            arguments: {'images': shipment.mediaUrls},
+                          );
+                        }
+                      },
                     ),
                   ],
                 ),
@@ -207,6 +217,40 @@ class OrderInfoRow extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+class ShipmentImagesView extends StatelessWidget {
+  const ShipmentImagesView({super.key, required this.images});
+  final List<String> images;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('صور الشحنة'),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: AppColors.appBarColor,
+      ),
+      body: PageView.builder(
+        physics: BouncingScrollPhysics(),
+        itemCount: images.length,
+        itemBuilder: (context, index) {
+          return InteractiveViewer(
+            child: Image.network(
+              images[index],
+              fit: BoxFit.contain,
+              errorBuilder: (context, error, stackTrace) =>
+                  const Center(child: Icon(Icons.error, size: 50)),
+              loadingBuilder: (context, child, loadingProgress) {
+                if (loadingProgress == null) return child;
+                return const Center(child: CircularProgressIndicator());
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 }
