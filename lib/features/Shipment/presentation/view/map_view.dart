@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:driver_application/core/utils/service_locator.dart';
-import 'package:driver_application/features/Order/data/models/route_info.dart';
-import 'package:driver_application/features/Order/domain/repo/order_repo.dart';
-import 'package:driver_application/features/Order/presentation/manager/cubit/get_route_cubit.dart';
-import 'package:driver_application/features/Order/presentation/manager/cubit/get_route_state.dart';
+import 'package:driver_application/features/Shipment/data/models/route_info.dart';
+import 'package:driver_application/features/Shipment/domain/repo/order_repo.dart';
+import 'package:driver_application/features/Shipment/presentation/manager/cubit/get_route_cubit.dart';
+import 'package:driver_application/features/Shipment/presentation/manager/cubit/get_route_state.dart';
 
 class MapView extends StatefulWidget {
   const MapView({

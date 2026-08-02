@@ -7,8 +7,9 @@ import 'package:driver_application/generated/assets.dart';
 import 'package:flutter/material.dart';
 
 class OrderCard extends StatelessWidget {
-  const OrderCard({super.key, required this.shipment});
+  const OrderCard({super.key, required this.shipment, this.colors});
   final Shipment shipment;
+  final List<Color>? colors;
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +29,11 @@ class OrderCard extends StatelessWidget {
           margin: EdgeInsets.symmetric(horizontal: 13),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: Color(0xFFFEC400), width: 1.5),
-            color: Color(0xFFFBE782).withValues(alpha: 0.5),
+            border: Border.all(
+              color: colors?[1] ?? AppColors.seconderyColor,
+              width: 1.5,
+            ),
+            color: colors?[0] ?? Color(0xFFFBE782).withValues(alpha: 0.5),
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 22),
@@ -39,7 +43,8 @@ class OrderCard extends StatelessWidget {
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Color(0xFFEDAE10).withValues(alpha: 0.4),
+                    color:
+                        colors?[2] ?? Color(0xFFEDAE10).withValues(alpha: 0.4),
                   ),
                   child: Image(image: AssetImage(Assets.imagesTruck)),
                 ),

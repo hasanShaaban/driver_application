@@ -5,26 +5,42 @@ import 'package:flutter/material.dart';
 class CustomButton extends StatelessWidget {
   final String text;
   final void Function()? onTap;
-  const CustomButton({super.key, required this.text, this.onTap});
+  final bool isLoading;
+
+  const CustomButton({
+    super.key,
+    required this.text,
+    this.onTap,
+    this.isLoading = false,
+  });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: double.infinity,
       child: TextButton(
-        onPressed: onTap,
+        onPressed: isLoading ? null : onTap,
         style: TextButton.styleFrom(
           backgroundColor: AppColors.primaryColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadiusGeometry.circular(8),
+            borderRadius: BorderRadius.circular(8),
           ),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
-          child: Text(
-            text,
-            style: AppTextStyle.regular16.copyWith(color: Colors.white),
-          ),
+          child: isLoading
+              ? const SizedBox(
+                  height: 22,
+                  width: 22,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                )
+              : Text(
+                  text,
+                  style: AppTextStyle.regular16.copyWith(color: Colors.white),
+                ),
         ),
       ),
     );

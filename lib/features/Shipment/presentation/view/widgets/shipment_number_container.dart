@@ -3,8 +3,12 @@ import 'package:driver_application/core/utils/app_text_style.dart';
 import 'package:driver_application/generated/assets.dart';
 import 'package:flutter/material.dart';
 
-class OrderNumberContainer extends StatelessWidget {
-  const OrderNumberContainer({super.key, required this.id, required this.date});
+class ShipmentNumberContainer extends StatelessWidget {
+  const ShipmentNumberContainer({
+    super.key,
+    required this.id,
+    required this.date,
+  });
   final int id;
   final String date;
   @override

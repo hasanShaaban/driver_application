@@ -2,15 +2,22 @@ import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:driver_application/core/errors/failures.dart';
 import 'package:driver_application/core/network/api_service.dart';
-import 'package:driver_application/features/Order/data/models/route_info.dart';
-import 'package:driver_application/features/Order/domain/repo/order_repo.dart';
+import 'package:driver_application/features/Shipment/data/models/accept_shipment_response_model.dart';
+import 'package:driver_application/features/Shipment/data/models/route_info.dart';
+import 'package:driver_application/features/Shipment/domain/data_source/shipment_local_data_source.dart';
+import 'package:driver_application/features/Shipment/domain/repo/order_repo.dart';
 
 class OrderRepoImpl implements OrderRepo {
   final ApiService apiService;
+  final ShipmentLocalDataSource shipmentLocalDataSource;
 
-  OrderRepoImpl(this.apiService);
+  OrderRepoImpl({
+    required this.apiService,
+    required this.shipmentLocalDataSource,
+  });
+
   @override
-  Future<Either<Failure, bool>> acceptChipment({
+  Future<Either<Failure, AcceptShipmentResponseModel>> acceptChipment({
     required int shipmentId,
   }) async {
     try {
@@ -18,7 +25,11 @@ class OrderRepoImpl implements OrderRepo {
         endPoint: 'driver/shipments/accept',
         data: {'shipment_id': shipmentId},
       );
-      return right(response.data['status'] == 'success');
+      final responseModel = AcceptShipmentResponseModel.fromJson(response.data);
+      await shipmentLocalDataSource.saveAcceptedShipment(
+        shipment: responseModel.data,
+      );
+      return right(responseModel);
     } on DioException catch (e) {
       return left(ServerFailure.fromDioException(e));
     } catch (e) {

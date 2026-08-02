@@ -1,4 +1,4 @@
-import 'package:driver_application/features/Order/data/models/route_info.dart';
+import 'package:driver_application/features/Shipment/data/models/route_info.dart';
 
 abstract class GetRouteState {}
 

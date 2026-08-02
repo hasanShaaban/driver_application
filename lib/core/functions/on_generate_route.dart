@@ -1,5 +1,5 @@
-import 'package:driver_application/features/Order/presentation/view/map_view.dart';
-import 'package:driver_application/features/Order/presentation/view/order_info_view.dart';
+import 'package:driver_application/features/Shipment/presentation/view/map_view.dart';
+import 'package:driver_application/features/Shipment/presentation/view/shipment_info_view.dart';
 import 'package:driver_application/features/Profile/presentation/view/my_rate_view.dart';
 import 'package:driver_application/features/Profile/presentation/view/profile_info_view.dart';
 import 'package:driver_application/features/Profile/presentation/view/profits_view.dart';
@@ -60,7 +60,7 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
       final args = settings.arguments as Map<String, Shipment>;
       return MaterialPageRoute(
         builder: (context) =>
-            OrderInfoView(shipment: args['shipment'] as Shipment),
+            ShipmentInfoView(shipment: args['shipment'] as Shipment),
         settings: settings,
       );
     case AppRoutes.shipmentImages:

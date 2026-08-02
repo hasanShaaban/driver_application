@@ -7,8 +7,12 @@ import 'package:driver_application/features/Auth/domain/repo/auth_repo.dart';
 import 'package:driver_application/features/Auth/data/data_sources/auth_local_data_source.dart';
 import 'package:driver_application/features/home/data/repo/home_repo_impl.dart';
 import 'package:driver_application/features/home/domain/repo/home_repo.dart';
-import 'package:driver_application/features/Order/data/repo/order_repo_impl.dart';
-import 'package:driver_application/features/Order/domain/repo/order_repo.dart';
+import 'package:driver_application/features/Shipment/data/data_source/shipment_local_data_source_impl.dart';
+import 'package:driver_application/features/Shipment/domain/data_source/shipment_local_data_source.dart';
+import 'package:driver_application/features/Shipment/data/repo/order_repo_impl.dart';
+import 'package:driver_application/features/Shipment/domain/repo/order_repo.dart';
+import 'package:driver_application/features/home/data/repo/my_shipments_repo_impl.dart';
+import 'package:driver_application/features/home/domain/repo/my_shipments_repo.dart';
 import 'package:driver_application/features/Profile/data/repo/profile_repo_impl.dart';
 import 'package:driver_application/features/Profile/domain/profile_repo.dart';
 import 'package:get_it/get_it.dart';
@@ -28,7 +32,20 @@ void setupServiceLocator() {
     ),
   );
   getIt.registerSingleton<HomeRepo>(HomeRepoImpl(getIt.get<ApiService>()));
-  getIt.registerSingleton<OrderRepo>(OrderRepoImpl(getIt.get<ApiService>()));
+  getIt.registerSingleton<ShipmentLocalDataSource>(
+    ShipmentLocalDataSourceImpl(appStorage: getIt.get<AppStorage>()),
+  );
+  getIt.registerSingleton<OrderRepo>(
+    OrderRepoImpl(
+      apiService: getIt.get<ApiService>(),
+      shipmentLocalDataSource: getIt.get<ShipmentLocalDataSource>(),
+    ),
+  );
+  getIt.registerSingleton<MyShipmentsRepo>(
+    MyShipmentsRepoImpl(
+      shipmentLocalDataSource: getIt.get<ShipmentLocalDataSource>(),
+    ),
+  );
   getIt.registerSingleton<ProfileRepo>(
     ProfileRepoImpl(
       apiService: getIt.get<ApiService>(),

@@ -68,7 +68,7 @@ class Shipment {
   final String? deliveredAt;
   final List<String> mediaUrls;
   final Merchant merchant;
-  final dynamic driver;
+  final DriverModel? driver;
   final RouteModel route;
   final String createdAt;
 
@@ -110,7 +110,7 @@ class Shipment {
       deliveredAt: json['delivered_at'] as String?,
       mediaUrls: (json['media_urls'] as List<dynamic>).map((e) => e.toString()).toList(),
       merchant: Merchant.fromJson(json['merchant'] as Map<String, dynamic>),
-      driver: json['driver'],
+      driver: json['driver'] != null ? DriverModel.fromJson(json['driver'] as Map<String, dynamic>) : null,
       route: RouteModel.fromJson(json['route'] as Map<String, dynamic>),
       createdAt: json['created_at'] as String,
     );
@@ -133,9 +133,65 @@ class Shipment {
       'delivered_at': deliveredAt,
       'media_urls': mediaUrls,
       'merchant': merchant.toJson(),
-      'driver': driver,
+      'driver': driver?.toJson(),
       'route': route.toJson(),
       'created_at': createdAt,
+    };
+  }
+}
+
+class DriverModel {
+  final int id;
+  final int uid;
+  final String fullName;
+  final String? email;
+  final String phoneNumber;
+  final String? vehicleType;
+  final String? vehicleSize;
+  final num? currentLat;
+  final num? currentLon;
+  final String? profilePictureUrl;
+
+  const DriverModel({
+    required this.id,
+    required this.uid,
+    required this.fullName,
+    this.email,
+    required this.phoneNumber,
+    this.vehicleType,
+    this.vehicleSize,
+    this.currentLat,
+    this.currentLon,
+    this.profilePictureUrl,
+  });
+
+  factory DriverModel.fromJson(Map<String, dynamic> json) {
+    return DriverModel(
+      id: json['id'] as int,
+      uid: json['uid'] as int,
+      fullName: json['full_name'] as String,
+      email: json['email'] as String?,
+      phoneNumber: json['phone_number'] as String,
+      vehicleType: json['vehicle_type'] as String?,
+      vehicleSize: json['vehicle_size'] as String?,
+      currentLat: json['current_lat'] as num?,
+      currentLon: json['current_lon'] as num?,
+      profilePictureUrl: json['profile_picture_url'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'uid': uid,
+      'full_name': fullName,
+      'email': email,
+      'phone_number': phoneNumber,
+      'vehicle_type': vehicleType,
+      'vehicle_size': vehicleSize,
+      'current_lat': currentLat,
+      'current_lon': currentLon,
+      'profile_picture_url': profilePictureUrl,
     };
   }
 }
