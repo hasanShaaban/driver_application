@@ -9,10 +9,12 @@ import 'package:driver_application/features/home/data/repo/home_repo_impl.dart';
 import 'package:driver_application/features/home/domain/repo/home_repo.dart';
 import 'package:driver_application/features/Shipment/data/data_source/shipment_local_data_source_impl.dart';
 import 'package:driver_application/features/Shipment/domain/data_source/shipment_local_data_source.dart';
-import 'package:driver_application/features/Shipment/data/repo/order_repo_impl.dart';
-import 'package:driver_application/features/Shipment/domain/repo/order_repo.dart';
+import 'package:driver_application/features/Shipment/data/repo/shipment_repo_impl.dart';
+import 'package:driver_application/features/Shipment/domain/repo/shipment_repo.dart';
 import 'package:driver_application/features/home/data/repo/my_shipments_repo_impl.dart';
 import 'package:driver_application/features/home/domain/repo/my_shipments_repo.dart';
+import 'package:driver_application/features/OTP/data/repo/otp_repo_impl.dart';
+import 'package:driver_application/features/OTP/domain/repo/otp_repo.dart';
 import 'package:driver_application/features/Profile/data/repo/profile_repo_impl.dart';
 import 'package:driver_application/features/Profile/domain/profile_repo.dart';
 import 'package:get_it/get_it.dart';
@@ -51,5 +53,8 @@ void setupServiceLocator() {
       apiService: getIt.get<ApiService>(),
       authLocalDataSource: getIt.get<AuthLocalDataSource>(),
     ),
+  );
+  getIt.registerSingleton<OtpRepo>(
+    OtpRepoImpl(getIt.get<ApiService>()),
   );
 }

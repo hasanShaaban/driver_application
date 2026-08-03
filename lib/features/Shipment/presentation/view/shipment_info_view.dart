@@ -5,9 +5,11 @@ import 'package:driver_application/core/utils/date_formatter.dart';
 import 'package:driver_application/core/utils/service_locator.dart';
 import 'package:driver_application/core/utils/widgets/custom_button.dart';
 import 'package:driver_application/features/Auth/data/data_sources/auth_local_data_source.dart';
-import 'package:driver_application/features/Shipment/domain/repo/order_repo.dart';
+import 'package:driver_application/features/Shipment/domain/repo/shipment_repo.dart';
 import 'package:driver_application/features/Shipment/presentation/manager/cubit/accept_shipment_cubit.dart';
 import 'package:driver_application/features/Shipment/presentation/manager/cubit/accept_shipment_state.dart';
+import 'package:driver_application/features/Shipment/presentation/manager/cubit/update_trip_status_cubit.dart';
+import 'package:driver_application/features/Shipment/presentation/manager/cubit/update_trip_status_state.dart';
 import 'package:driver_application/features/Shipment/presentation/view/widgets/shipment_number_container.dart';
 import 'package:driver_application/features/home/data/models/shipments_response_model.dart';
 import 'package:flutter/material.dart';
@@ -33,10 +35,20 @@ class _ShipmentInfoViewState extends State<ShipmentInfoView> {
 
   String _getStatusText(String status) {
     switch (status) {
+      case 'accepted':
+        return 'مقبول';
+      case 'scheduled':
+        return 'مجدول';
       case 'heading_to_pickup':
         return 'في الطريق إلى موقع التحميل';
       case 'in_transit':
         return 'جاري التوصيل';
+      case 'completed':
+        return 'مكتمل';
+      case 'cancelled':
+        return 'ملغي';
+      case 'pending':
+        return 'قيد الانتظار';
       default:
         return status;
     }
@@ -44,8 +56,15 @@ class _ShipmentInfoViewState extends State<ShipmentInfoView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AcceptShipmentCubit(getIt.get<OrderRepo>()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => AcceptShipmentCubit(getIt.get<OrderRepo>()),
+        ),
+        BlocProvider(
+          create: (context) => UpdateTripStatusCubit(getIt.get<OrderRepo>()),
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(
           iconTheme: const IconThemeData(color: Colors.black),
@@ -73,251 +92,332 @@ class _ShipmentInfoViewState extends State<ShipmentInfoView> {
           ),
         ),
         body: BlocConsumer<AcceptShipmentCubit, AcceptShipmentState>(
-          listener: (context, state) {
-            if (state is AcceptShipmentSuccess) {
+          listener: (context, acceptState) {
+            if (acceptState is AcceptShipmentSuccess) {
               setState(() {
-                currentShipment = state.responseModel.data;
+                currentShipment = acceptState.responseModel.data;
+                selectedStatus = null;
               });
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(state.responseModel.message),
+                  content: Text(acceptState.responseModel.message),
                   backgroundColor: Colors.green,
                 ),
               );
-            } else if (state is AcceptShipmentFailure) {
+            } else if (acceptState is AcceptShipmentFailure) {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text(state.errMessage),
+                  content: Text(acceptState.errMessage),
                   backgroundColor: Colors.red,
                 ),
               );
             }
           },
-          builder: (context, state) {
-            final loginData = getIt.get<AuthLocalDataSource>().getLoginData();
-            final currentDriverId = loginData?.data.id;
-            final currentDriverUid = loginData?.data.uid;
-
-            final bool hasNoDriver = currentShipment.driver == null;
-            final bool isTakenByMe =
-                currentShipment.driver != null &&
-                (currentShipment.driver!.id == currentDriverId ||
-                    currentShipment.driver!.uid == currentDriverUid);
-
-            String buttonText;
-            VoidCallback? onButtonTap;
-
-            if (hasNoDriver) {
-              buttonText = 'قبول الطلب';
-              onButtonTap = () {
-                context.read<AcceptShipmentCubit>().acceptShipment(
-                  shipmentId: currentShipment.id,
-                );
-              };
-            } else if (isTakenByMe) {
-              buttonText = 'إنهاء الشحنة';
-              onButtonTap = () {
-                // Submit ending of shipment
-              };
-            } else {
-              buttonText = 'تم قبول الشحنة من قبل سائق آخر';
-              onButtonTap = null;
-            }
-
-            return SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    ShipmentNumberContainer(
-                      id: currentShipment.id,
-                      date: DateFormatter.formatDate(currentShipment.createdAt),
+          builder: (context, acceptState) {
+            return BlocConsumer<UpdateTripStatusCubit, UpdateTripStatusState>(
+              listener: (context, updateState) {
+                if (updateState is UpdateTripStatusSuccess) {
+                  setState(() {
+                    currentShipment = updateState.responseModel.data;
+                    selectedStatus = null;
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(updateState.responseModel.message),
+                      backgroundColor: Colors.green,
                     ),
-                    const Divider(thickness: 1),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 13,
-                        vertical: 11,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: Colors.grey.shade200,
-                      ),
-                      child: Row(
-                        children: [
-                          Text(
-                            'حالة الطلب ',
-                            style: AppTextStyle.semiBold16.copyWith(
-                              color: Colors.black,
-                            ),
+                  );
+                } else if (updateState is UpdateTripStatusFailure) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(updateState.errMessage),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              },
+              builder: (context, updateState) {
+                final bool isUpdateLoading =
+                    updateState is UpdateTripStatusLoading;
+                final loginData = getIt
+                    .get<AuthLocalDataSource>()
+                    .getLoginData();
+                final currentDriverId = loginData?.data.id;
+                final currentDriverUid = loginData?.data.uid;
+
+                final bool hasNoDriver = currentShipment.driver == null;
+                final bool isTakenByMe =
+                    currentShipment.driver != null &&
+                    (currentShipment.driver!.id == currentDriverId ||
+                        currentShipment.driver!.uid == currentDriverUid);
+
+                final String currentStatus =
+                    selectedStatus ?? currentShipment.status;
+                final bool isHeadingToPickupEnabled =
+                    isTakenByMe &&
+                    (currentStatus == 'accepted' ||
+                        currentStatus == 'scheduled');
+                final bool isInTransitEnabled =
+                    isTakenByMe && currentStatus == 'heading_to_pickup';
+
+                String buttonText;
+                VoidCallback? onButtonTap;
+
+                if (hasNoDriver) {
+                  buttonText = 'قبول الطلب';
+                  onButtonTap = () {
+                    context.read<AcceptShipmentCubit>().acceptShipment(
+                      shipmentId: currentShipment.id,
+                    );
+                  };
+                } else if (isTakenByMe) {
+                  buttonText = 'إنهاء الشحنة';
+                  onButtonTap = () {
+                    Navigator.pushReplacementNamed(context, AppRoutes.otp);
+                  };
+                } else {
+                  buttonText = 'تم قبول الشحنة من قبل سائق آخر';
+                  onButtonTap = null;
+                }
+
+                return SafeArea(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        ShipmentNumberContainer(
+                          id: currentShipment.id,
+                          date: DateFormatter.formatDate(
+                            currentShipment.createdAt,
                           ),
-                          const Spacer(),
-                          PopupMenuButton<String>(
-                            onSelected: (String value) {
-                              setState(() {
-                                selectedStatus = value;
-                              });
-                            },
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            itemBuilder: (BuildContext context) => [
-                              PopupMenuItem<String>(
-                                value: 'heading_to_pickup',
-                                child: Text(
-                                  'في الطريق إلى موقع التحميل',
-                                  style: AppTextStyle.medium14,
-                                ),
-                              ),
-                              PopupMenuItem<String>(
-                                value: 'in_transit',
-                                child: Text(
-                                  'جاري التوصيل',
-                                  style: AppTextStyle.medium14,
-                                ),
-                              ),
-                            ],
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.seconderyColor.withValues(
-                                  alpha: 0.30,
-                                ),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
+                        ),
+                        const Divider(thickness: 1),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 13,
+                            vertical: 11,
+                          ),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Colors.grey.shade200,
+                          ),
+                          child: Column(
+                            children: [
+                              Row(
                                 children: [
                                   Text(
-                                    _getStatusText(
-                                      selectedStatus ?? currentShipment.status,
-                                    ),
+                                    'حالة الطلب ',
                                     style: AppTextStyle.semiBold16.copyWith(
-                                      color: AppColors.seconderyColor,
+                                      color: Colors.black,
                                     ),
                                   ),
-                                  const SizedBox(width: 4),
-                                  const Icon(
-                                    Icons.arrow_drop_down,
-                                    color: AppColors.seconderyColor,
+                                  const Spacer(),
+                                  PopupMenuButton<String>(
+                                    enabled:
+                                        !isUpdateLoading &&
+                                        (isHeadingToPickupEnabled ||
+                                            isInTransitEnabled),
+                                    onSelected: (String value) {
+                                      context
+                                          .read<UpdateTripStatusCubit>()
+                                          .updateTripStatus(
+                                            id: currentShipment.id,
+                                            status: value,
+                                          );
+                                    },
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    itemBuilder: (BuildContext context) => [
+                                      PopupMenuItem<String>(
+                                        value: 'heading_to_pickup',
+                                        enabled: isHeadingToPickupEnabled,
+                                        child: Text(
+                                          'في الطريق إلى موقع التحميل',
+                                          style: AppTextStyle.medium14.copyWith(
+                                            color: isHeadingToPickupEnabled
+                                                ? Colors.black
+                                                : Colors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                      PopupMenuItem<String>(
+                                        value: 'in_transit',
+                                        enabled: isInTransitEnabled,
+                                        child: Text(
+                                          'جاري التوصيل',
+                                          style: AppTextStyle.medium14.copyWith(
+                                            color: isInTransitEnabled
+                                                ? Colors.black
+                                                : Colors.grey,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 6,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.seconderyColor
+                                            .withValues(alpha: 0.30),
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            _getStatusText(currentStatus),
+                                            style: AppTextStyle.semiBold16
+                                                .copyWith(
+                                                  color:
+                                                      AppColors.seconderyColor,
+                                                ),
+                                          ),
+                                          const SizedBox(width: 4),
+                                          const Icon(
+                                            Icons.arrow_drop_down,
+                                            color: AppColors.seconderyColor,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
+                              if (isUpdateLoading) ...[
+                                const SizedBox(height: 8),
+                                const ClipRRect(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(4),
+                                  ),
+                                  child: LinearProgressIndicator(
+                                    color: AppColors.primaryColor,
+                                    backgroundColor: Colors.white,
+                                    minHeight: 3,
+                                  ),
+                                ),
+                              ],
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 19,
-                        vertical: 16,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('تفاصيل الطلب', style: AppTextStyle.semiBold16),
-                          ShipmentInfoRow(
-                            title: 'تاريخ المهمة',
-                            data: DateFormatter.formatDate(
-                              currentShipment.pickupAt,
-                            ),
+                        ),
+                        const SizedBox(height: 14),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                          ShipmentInfoRow(
-                            title: 'وقت المهمة',
-                            data: DateFormatter.formatTime(
-                              currentShipment.pickupAt,
-                            ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 19,
+                            vertical: 16,
                           ),
-                          ShipmentInfoRow(
-                            title: 'موقع التحميل',
-                            data: 'عرض التفاصيل',
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                AppRoutes.map,
-                                arguments: {
-                                  'id': currentShipment.id,
-                                  'pickupLat': currentShipment.route.pickupLat,
-                                  'pickupLng': currentShipment.route.pickupLon,
-                                  'destinationLat':
-                                      currentShipment.route.deliveryLat,
-                                  'destinationLng':
-                                      currentShipment.route.deliveryLon,
-                                  'initialLocation': 'pickup',
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'تفاصيل الطلب',
+                                style: AppTextStyle.semiBold16,
+                              ),
+                              ShipmentInfoRow(
+                                title: 'تاريخ المهمة',
+                                data: DateFormatter.formatDate(
+                                  currentShipment.pickupAt,
+                                ),
+                              ),
+                              ShipmentInfoRow(
+                                title: 'وقت المهمة',
+                                data: DateFormatter.formatTime(
+                                  currentShipment.pickupAt,
+                                ),
+                              ),
+                              ShipmentInfoRow(
+                                title: 'موقع التحميل',
+                                data: 'عرض التفاصيل',
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    AppRoutes.map,
+                                    arguments: {
+                                      'id': currentShipment.id,
+                                      'pickupLat':
+                                          currentShipment.route.pickupLat,
+                                      'pickupLng':
+                                          currentShipment.route.pickupLon,
+                                      'destinationLat':
+                                          currentShipment.route.deliveryLat,
+                                      'destinationLng':
+                                          currentShipment.route.deliveryLon,
+                                      'initialLocation': 'pickup',
+                                    },
+                                  );
                                 },
-                              );
-                            },
-                          ),
-                          ShipmentInfoRow(
-                            title: 'موقع التنزيل',
-                            data: 'عرض التفاصيل',
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                AppRoutes.map,
-                                arguments: {
-                                  'id': currentShipment.id,
-                                  'pickupLat': currentShipment.route.pickupLat,
-                                  'pickupLng': currentShipment.route.pickupLon,
-                                  'destinationLat':
-                                      currentShipment.route.deliveryLat,
-                                  'destinationLng':
-                                      currentShipment.route.deliveryLon,
-                                  'initialLocation': 'destination',
+                              ),
+                              ShipmentInfoRow(
+                                title: 'موقع التنزيل',
+                                data: 'عرض التفاصيل',
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    AppRoutes.map,
+                                    arguments: {
+                                      'id': currentShipment.id,
+                                      'pickupLat':
+                                          currentShipment.route.pickupLat,
+                                      'pickupLng':
+                                          currentShipment.route.pickupLon,
+                                      'destinationLat':
+                                          currentShipment.route.deliveryLat,
+                                      'destinationLng':
+                                          currentShipment.route.deliveryLon,
+                                      'initialLocation': 'destination',
+                                    },
+                                  );
                                 },
-                              );
-                            },
+                              ),
+                              ShipmentInfoRow(
+                                title: 'نوع الحمولة',
+                                data: currentShipment.goodsType,
+                              ),
+                              ShipmentInfoRow(
+                                title: 'المسافة',
+                                data:
+                                    '${currentShipment.route.distance.toString()} km',
+                              ),
+                              ShipmentInfoRow(
+                                title: 'الصور',
+                                data: currentShipment.mediaUrls.isEmpty
+                                    ? 'لا توجد صور'
+                                    : 'عرض الصور',
+                                onTap: () {
+                                  if (currentShipment.mediaUrls.isNotEmpty) {
+                                    Navigator.pushNamed(
+                                      context,
+                                      AppRoutes.shipmentImages,
+                                      arguments: {
+                                        'images': currentShipment.mediaUrls,
+                                      },
+                                    );
+                                  }
+                                },
+                              ),
+                            ],
                           ),
-                          ShipmentInfoRow(
-                            title: 'نوع الحمولة',
-                            data: currentShipment.goodsType,
-                          ),
-                          ShipmentInfoRow(
-                            title: 'المسافة',
-                            data:
-                                '${currentShipment.route.distance.toString()} km',
-                          ),
-                          ShipmentInfoRow(
-                            title: 'الصور',
-                            data: currentShipment.mediaUrls.isEmpty
-                                ? 'لا توجد صور'
-                                : 'عرض الصور',
-                            onTap: () {
-                              if (currentShipment.mediaUrls.isNotEmpty) {
-                                Navigator.pushNamed(
-                                  context,
-                                  AppRoutes.shipmentImages,
-                                  arguments: {
-                                    'images': currentShipment.mediaUrls,
-                                  },
-                                );
-                              }
-                            },
-                          ),
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 40),
+                        CustomButton(
+                          text: buttonText,
+                          isLoading: acceptState is AcceptShipmentLoading,
+                          onTap: onButtonTap,
+                        ),
+                        const SizedBox(height: 20),
+                      ],
                     ),
-                    const SizedBox(height: 40),
-                    CustomButton(
-                      text: buttonText,
-                      isLoading: state is AcceptShipmentLoading,
-                      onTap: onButtonTap,
-                    ),
-                    const SizedBox(height: 20),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             );
           },
         ),
