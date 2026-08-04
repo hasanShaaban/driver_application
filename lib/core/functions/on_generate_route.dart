@@ -1,5 +1,6 @@
 import 'package:driver_application/features/OTP/domain/repo/otp_repo.dart';
 import 'package:driver_application/features/OTP/presentation/manager/cubit/send_delivery_otp_cubit.dart';
+import 'package:driver_application/features/OTP/presentation/manager/cubit/verify_delivery_otp_cubit.dart';
 import 'package:driver_application/features/OTP/presentation/views/otp_view.dart';
 import 'package:driver_application/features/Shipment/presentation/view/map_view.dart';
 import 'package:driver_application/features/Shipment/presentation/view/shipment_info_view.dart';
@@ -87,11 +88,21 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
         settings: settings,
       );
     case AppRoutes.otp:
+      final args = settings.arguments as Map<String, dynamic>?;
+      final shipmentId = args?['id'] as int?;
       return MaterialPageRoute(
-        builder: (context) => BlocProvider(
-          create: (context) =>
-              SendDeliveryOtpCubit(getIt.get<OtpRepo>())..sendDeliveryOtp(),
-          child: const OTPView(),
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) =>
+                  SendDeliveryOtpCubit(getIt.get<OtpRepo>())..sendDeliveryOtp(),
+            ),
+            BlocProvider(
+              create: (context) =>
+                  VerifyDeliveryOtpCubit(getIt.get<OtpRepo>()),
+            ),
+          ],
+          child: OTPView(shipmentId: shipmentId),
         ),
         settings: settings,
       );

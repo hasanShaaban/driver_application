@@ -1,3 +1,4 @@
+import 'package:driver_application/core/functions/get_status_text.dart';
 import 'package:driver_application/core/utils/app_colors.dart';
 import 'package:driver_application/core/utils/app_routes.dart';
 import 'package:driver_application/core/utils/app_text_style.dart';
@@ -70,6 +71,7 @@ class OrderCard extends StatelessWidget {
                         ),
                         SizedBox(width: 24),
                         Container(
+                          width: 110,
                           decoration: BoxDecoration(
                             color: AppColors.seconderyColor.withValues(
                               alpha: 0.3,
@@ -81,7 +83,8 @@ class OrderCard extends StatelessWidget {
                             vertical: 3,
                           ),
                           child: Text(
-                            'بالانتظار',
+                            getStatusText(shipment.status),
+                            textAlign: TextAlign.center,
                             style: AppTextStyle.medium14.copyWith(
                               color: AppColors.seconderyColor,
                             ),

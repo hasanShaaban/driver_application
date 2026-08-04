@@ -1,3 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:driver_application/core/notifications/services/push_notification_service.dart';
+import 'package:driver_application/core/notifications/services/firebase_push_notification_service_impl.dart';
 import 'package:driver_application/features/home/presentation/view/home_view.dart';
 import 'package:driver_application/features/onBoarding/presentation/view/on_boarding_view.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +16,11 @@ import 'core/storage/app_storage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   setupServiceLocator();
+  await getIt.get<PushNotificationService>().initialize();
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
   await Hive.initFlutter();
   await getIt.get<AppStorage>().init();
 

@@ -1,3 +1,4 @@
+import 'package:driver_application/core/functions/get_status_text.dart';
 import 'package:driver_application/core/utils/app_colors.dart';
 import 'package:driver_application/core/utils/app_routes.dart';
 import 'package:driver_application/core/utils/app_text_style.dart';
@@ -31,27 +32,6 @@ class _ShipmentInfoViewState extends State<ShipmentInfoView> {
   void initState() {
     super.initState();
     currentShipment = widget.shipment;
-  }
-
-  String _getStatusText(String status) {
-    switch (status) {
-      case 'accepted':
-        return 'مقبول';
-      case 'scheduled':
-        return 'مجدول';
-      case 'heading_to_pickup':
-        return 'في الطريق إلى موقع التحميل';
-      case 'in_transit':
-        return 'جاري التوصيل';
-      case 'completed':
-        return 'مكتمل';
-      case 'cancelled':
-        return 'ملغي';
-      case 'pending':
-        return 'قيد الانتظار';
-      default:
-        return status;
-    }
   }
 
   @override
@@ -172,9 +152,14 @@ class _ShipmentInfoViewState extends State<ShipmentInfoView> {
                   };
                 } else if (isTakenByMe) {
                   buttonText = 'إنهاء الشحنة';
-                  onButtonTap = () {
-                    Navigator.pushReplacementNamed(context, AppRoutes.otp);
-                  };
+                  onButtonTap = currentStatus == 'in_transit'
+                      ? () {
+                          Navigator.pushReplacementNamed(
+                            context,
+                            AppRoutes.otp,
+                          );
+                        }
+                      : null;
                 } else {
                   buttonText = 'تم قبول الشحنة من قبل سائق آخر';
                   onButtonTap = null;
@@ -269,7 +254,7 @@ class _ShipmentInfoViewState extends State<ShipmentInfoView> {
                                         mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Text(
-                                            _getStatusText(currentStatus),
+                                            getStatusText(currentStatus),
                                             style: AppTextStyle.semiBold16
                                                 .copyWith(
                                                   color:

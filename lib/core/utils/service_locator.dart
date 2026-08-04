@@ -17,6 +17,12 @@ import 'package:driver_application/features/OTP/data/repo/otp_repo_impl.dart';
 import 'package:driver_application/features/OTP/domain/repo/otp_repo.dart';
 import 'package:driver_application/features/Profile/data/repo/profile_repo_impl.dart';
 import 'package:driver_application/features/Profile/domain/profile_repo.dart';
+import 'package:driver_application/core/notifications/repo/notification_repo.dart';
+import 'package:driver_application/core/notifications/repo/notification_repo_impl.dart';
+import 'package:driver_application/core/notifications/services/local_notification_service.dart';
+import 'package:driver_application/core/notifications/services/flutter_local_notification_service_impl.dart';
+import 'package:driver_application/core/notifications/services/push_notification_service.dart';
+import 'package:driver_application/core/notifications/services/firebase_push_notification_service_impl.dart';
 import 'package:get_it/get_it.dart';
 
 final getIt = GetIt.instance;
@@ -24,6 +30,14 @@ final getIt = GetIt.instance;
 void setupServiceLocator() {
   getIt.registerSingleton<ApiService>(ApiService(Dio()));
   getIt.registerSingleton<AppStorage>(HiveStorageImpl());
+  getIt.registerSingleton<LocalNotificationService>(
+    FlutterLocalNotificationServiceImpl(),
+  );
+  getIt.registerSingleton<PushNotificationService>(
+    FirebasePushNotificationServiceImpl(
+      localNotificationService: getIt.get<LocalNotificationService>(),
+    ),
+  );
   getIt.registerSingleton<AuthLocalDataSource>(
     AuthLocalDataSourceImpl(appStorage: getIt.get<AppStorage>()),
   );
@@ -31,6 +45,12 @@ void setupServiceLocator() {
     LoginRepoImpl(
       apiService: getIt.get<ApiService>(),
       localDataSource: getIt.get<AuthLocalDataSource>(),
+    ),
+  );
+  getIt.registerSingleton<NotificationRepo>(
+    NotificationRepoImpl(
+      getIt.get<ApiService>(),
+      getIt.get<PushNotificationService>(),
     ),
   );
   getIt.registerSingleton<HomeRepo>(HomeRepoImpl(getIt.get<ApiService>()));
@@ -55,6 +75,9 @@ void setupServiceLocator() {
     ),
   );
   getIt.registerSingleton<OtpRepo>(
-    OtpRepoImpl(getIt.get<ApiService>()),
+    OtpRepoImpl(
+      getIt.get<ApiService>(),
+      shipmentLocalDataSource: getIt.get<ShipmentLocalDataSource>(),
+    ),
   );
 }

@@ -27,6 +27,7 @@ class OrderRepoImpl implements OrderRepo {
         data: {'shipment_id': shipmentId},
       );
       final responseModel = AcceptShipmentResponseModel.fromJson(response.data);
+      await shipmentLocalDataSource.deleteAcceptedShipment();
       await shipmentLocalDataSource.saveAcceptedShipment(
         shipment: responseModel.data,
       );

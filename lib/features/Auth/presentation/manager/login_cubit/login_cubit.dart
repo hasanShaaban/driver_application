@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:driver_application/core/notifications/repo/notification_repo.dart';
 import 'package:driver_application/features/Auth/domain/repo/auth_repo.dart';
 import 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
   final AuthRepo authRepo;
+  final NotificationRepo notificationRepo;
 
-  LoginCubit(this.authRepo) : super(LoginInitial());
+  LoginCubit(this.authRepo, this.notificationRepo) : super(LoginInitial());
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController phoneController = TextEditingController();
@@ -31,11 +33,12 @@ class LoginCubit extends Cubit<LoginState> {
       password: passwordController.text.trim(),
     );
 
-    result.fold(
-      (failure) {
+    await result.fold(
+      (failure) async {
         emit(LoginFailure(errMessage: failure.message));
       },
-      (loginModel) {
+      (loginModel) async {
+        await notificationRepo.fetchAndSendFcmToken();
         emit(LoginSuccess());
       },
     );

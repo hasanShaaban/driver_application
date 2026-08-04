@@ -4,4 +4,8 @@ import 'package:driver_application/features/OTP/data/models/send_delivery_otp_re
 
 abstract class OtpRepo {
   Future<Either<Failure, SendDeliveryOtpResponseModel>> sendDeliveryOtp();
+  Future<Either<Failure, SendDeliveryOtpResponseModel>> verifyDeliveryOtp({
+    required String otp,
+    required int id,
+  });
 }

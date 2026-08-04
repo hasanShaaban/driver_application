@@ -1,3 +1,4 @@
+import 'package:driver_application/core/notifications/repo/notification_repo.dart';
 import 'package:driver_application/core/utils/app_routes.dart';
 import 'package:driver_application/core/utils/app_text_style.dart';
 import 'package:driver_application/core/utils/widgets/custom_button.dart';
@@ -19,7 +20,10 @@ class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => LoginCubit(getIt.get<AuthRepo>()),
+      create: (context) => LoginCubit(
+        getIt.get<AuthRepo>(),
+        getIt.get<NotificationRepo>(),
+      ),
       child: Scaffold(
         backgroundColor: Colors.white,
         body: SingleChildScrollView(
