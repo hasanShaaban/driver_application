@@ -3,6 +3,7 @@ import 'package:driver_application/core/errors/failures.dart';
 import 'package:driver_application/features/Shipment/data/models/accept_shipment_response_model.dart';
 import 'package:driver_application/features/Shipment/data/models/change_shipment_status_response_model.dart';
 import 'package:driver_application/features/Shipment/data/models/route_info.dart';
+import 'package:driver_application/features/Shipment/data/models/user_location.dart';
 
 abstract class OrderRepo {
   Future<Either<Failure, AcceptShipmentResponseModel>> acceptChipment({
@@ -16,4 +17,9 @@ abstract class OrderRepo {
     required int id,
     required String status,
   });
+  Future<Either<Failure, bool>> updateLocation({
+    required double lat,
+    required double lng,
+  });
+  Future<UserLocation> getCurrentLocation();
 }
