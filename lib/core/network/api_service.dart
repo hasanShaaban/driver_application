@@ -74,6 +74,22 @@ class ApiService {
     );
   }
 
+  Future<Response> patch({
+    required String endPoint,
+    dynamic data,
+    Map<String, dynamic>? queryParameters,
+    String? token,
+  }) async {
+    return await _dio.patch(
+      endPoint,
+      data: data,
+      queryParameters: queryParameters,
+      options: Options(
+        headers: token != null ? {'Authorization': 'Bearer $token'} : null,
+      ),
+    );
+  }
+
   Future<Response> put({
     required String endPoint,
     dynamic data,

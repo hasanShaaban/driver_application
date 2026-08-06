@@ -69,7 +69,7 @@ class OrderCard extends StatelessWidget {
                             ),
                           ],
                         ),
-                        SizedBox(width: 24),
+                        SizedBox(width: 20),
                         Container(
                           width: 110,
                           decoration: BoxDecoration(
@@ -79,7 +79,7 @@ class OrderCard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(25),
                           ),
                           padding: EdgeInsets.symmetric(
-                            horizontal: 32,
+                            horizontal: 28,
                             vertical: 3,
                           ),
                           child: Text(

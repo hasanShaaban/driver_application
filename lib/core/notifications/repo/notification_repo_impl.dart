@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:driver_application/core/errors/failures.dart';
@@ -15,6 +17,9 @@ class NotificationRepoImpl implements NotificationRepo {
   Future<Either<Failure, String>> getFcmToken() async {
     try {
       final token = await pushNotificationService.getToken();
+      log(
+        '-------------------------------FCM Token : $token ------------------------------------',
+      );
       if (token != null && token.isNotEmpty) {
         return right(token);
       } else {
@@ -28,7 +33,7 @@ class NotificationRepoImpl implements NotificationRepo {
   @override
   Future<Either<Failure, bool>> updateFirebaseToken(String token) async {
     try {
-      final response = await apiService.post(
+      final response = await apiService.patch(
         endPoint: 'account-center/fcm-token',
         data: {'fcm_token': token},
       );

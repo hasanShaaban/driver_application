@@ -87,6 +87,10 @@ class OTPView extends StatelessWidget {
                           const SizedBox(height: 40),
                           OtpKit(
                             title: 'رمز تحقق',
+                            fieldConfig: OtpFieldConfig(
+                              fieldWidth:
+                                  MediaQuery.of(context).size.width * 50 / 496,
+                            ),
                             subtitle:
                                 'الرجاء ادخال الكود الذي تم ارساله \n الى هاتف المستلم*******09',
                             fieldCount: 6,

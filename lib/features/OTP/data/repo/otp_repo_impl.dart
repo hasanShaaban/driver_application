@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 import 'package:driver_application/core/errors/failures.dart';
@@ -37,13 +39,14 @@ class OtpRepoImpl implements OtpRepo {
   }) async {
     try {
       final response = await apiService.post(
-        endPoint: 'driver/shipments/send-delivery-otp',
+        endPoint: 'driver/shipments/complete',
         data: {'shipment_id': id, 'otp': otp},
       );
       final responseModel = SendDeliveryOtpResponseModel.fromJson(
         response.data,
       );
-      if (responseModel.status == 'delivered') {
+      if (responseModel.data.status == 'delivered') {
+        log('---------------------this log to delete the shipment------------');
         await shipmentLocalDataSource?.deleteAcceptedShipment();
       }
 
