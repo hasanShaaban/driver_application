@@ -127,6 +127,25 @@ class OrderRepoImpl implements OrderRepo {
       longitude: position.longitude,
     );
   }
+
+  @override
+  Future<Either<Failure, bool>> cancelShipment({
+    required String comment,
+    required int id,
+  }) async {
+    try {
+      final response = await apiService.patch(
+        endPoint: 'driver/shipments/cancel/$id',
+        data: {'reason': comment},
+      );
+      await shipmentLocalDataSource.deleteAcceptedShipment();
+      return right(response.data['status'] == 'success');
+    } on DioException catch (e) {
+      return left(ServerFailure.fromDioException(e));
+    } catch (e) {
+      return left(ServerFailure(e.toString()));
+    }
+  }
 }
 
 Future<void> _ensurePermission() async {

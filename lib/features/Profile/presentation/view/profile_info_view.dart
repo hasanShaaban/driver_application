@@ -2,8 +2,23 @@ import 'package:driver_application/core/utils/app_colors.dart';
 import 'package:driver_application/core/utils/app_text_style.dart';
 import 'package:flutter/material.dart';
 
+import 'package:driver_application/features/Profile/data/model/profile_response_model.dart';
+
 class ProfileInfoView extends StatelessWidget {
-  const ProfileInfoView({super.key});
+  const ProfileInfoView({super.key, required this.profile});
+
+  final ProfileDataModel profile;
+
+  final Map<String, String> genderMapper = const {
+    'male': 'ذكر',
+    'female': 'أنثى',
+  };
+
+  final Map<String, String> vehicleTypeMapper = const {
+    'covered': 'مغطاة',
+    'open': 'مكشوفة',
+    'refrigerated': 'مبرد',
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -20,14 +35,36 @@ class ProfileInfoView extends StatelessWidget {
           child: Column(
             children: [
               SizedBox(height: 30),
-              InfoContainer(text: 'أحمد النجار', title: 'الاسم'),
-              InfoContainer(text: '099898765456', title: 'الرقم'),
-              InfoContainer(text: '8/8/1995', title: 'العمر', age: 32),
-              InfoContainer(text: 'ذكر', title: 'الجنس'),
-              InfoContainer(text: '0108843234567888', title: 'رقم الهوية'),
-              InfoContainer(text: '0778891', title: 'رقم السيارة'),
-              InfoContainer(text: '099863552', title: 'رقم الرخصة'),
-              InfoContainer(text: '4.5', title: 'التقييم'),
+              InfoContainer(text: profile.fullName ?? '', title: 'الاسم'),
+              InfoContainer(text: profile.phoneNumber ?? '', title: 'الرقم'),
+              InfoContainer(
+                text: profile.driverProfile?.age?.toString() ?? '',
+                title: 'العمر',
+                age: profile.driverProfile?.age,
+              ),
+              InfoContainer(
+                text: genderMapper[profile.driverProfile?.gender] ?? '',
+                title: 'الجنس',
+              ),
+              InfoContainer(
+                text: profile.driverProfile?.id?.toString() ?? '',
+                title: 'رقم الهوية',
+              ),
+              InfoContainer(
+                text: profile.driverProfile?.licensePlateNumber ?? '',
+                title: 'رقم السيارة',
+              ),
+              InfoContainer(
+                text:
+                    vehicleTypeMapper[profile.driverProfile?.vehicleType] ?? '',
+                title: 'نوع المركبة',
+              ), // Replaced 'رقم الرخصة' since it's not in model
+              InfoContainer(
+                text: double.parse(
+                  profile.driverProfile?.ratingInfo?.averageRating ?? '',
+                ).floorToDouble().toString(),
+                title: 'التقييم',
+              ),
             ],
           ),
         ),
@@ -71,7 +108,7 @@ class InfoContainer extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(text, style: AppTextStyle.medium16),
-              if (age != null) Text('$age Years'),
+              // if (age != null) Text('$age Years'),
             ],
           ),
         ),

@@ -16,7 +16,9 @@ import 'package:driver_application/features/home/domain/repo/my_shipments_repo.d
 import 'package:driver_application/features/OTP/data/repo/otp_repo_impl.dart';
 import 'package:driver_application/features/OTP/domain/repo/otp_repo.dart';
 import 'package:driver_application/features/Profile/data/repo/profile_repo_impl.dart';
-import 'package:driver_application/features/Profile/domain/profile_repo.dart';
+import 'package:driver_application/features/Profile/domain/repo/profile_repo.dart';
+import 'package:driver_application/features/Profile/domain/data_source/profile_local_data_source.dart';
+import 'package:driver_application/features/Profile/data/data_source/profile_local_data_source_impl.dart';
 import 'package:driver_application/core/notifications/repo/notification_repo.dart';
 import 'package:driver_application/core/notifications/repo/notification_repo_impl.dart';
 import 'package:driver_application/core/notifications/services/local_notification_service.dart';
@@ -68,10 +70,14 @@ void setupServiceLocator() {
       shipmentLocalDataSource: getIt.get<ShipmentLocalDataSource>(),
     ),
   );
+  getIt.registerSingleton<ProfileLocalDataSource>(
+    ProfileLocalDataSourceImpl(appStorage: getIt.get<AppStorage>()),
+  );
   getIt.registerSingleton<ProfileRepo>(
     ProfileRepoImpl(
       apiService: getIt.get<ApiService>(),
       authLocalDataSource: getIt.get<AuthLocalDataSource>(),
+      profileLocalDataSource: getIt.get<ProfileLocalDataSource>(),
     ),
   );
   getIt.registerSingleton<OtpRepo>(

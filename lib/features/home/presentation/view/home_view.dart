@@ -8,6 +8,8 @@ import 'package:driver_application/generated/assets.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:driver_application/features/Profile/presentation/manager/profile_cubit/profile_cubit.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -81,6 +83,9 @@ class _HomeViewState extends State<HomeView> {
                 child: BottomNavigationBar(
                   currentIndex: _currentIndex,
                   onTap: (index) {
+                    if (index == 2 && _currentIndex != 2) {
+                      context.read<ProfileCubit>().fetchProfileData();
+                    }
                     setState(() {
                       _currentIndex = index;
                     });

@@ -16,8 +16,10 @@ import '../../features/Auth/presentation/views/login_view.dart';
 import '../../features/home/presentation/view/home_view.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../utils/service_locator.dart';
-import '../../features/Profile/domain/profile_repo.dart';
+import '../../features/Profile/domain/repo/profile_repo.dart';
 import '../../features/Profile/presentation/manager/ratings_cubit/ratings_cubit.dart';
+import '../../features/Profile/presentation/manager/profile_cubit/profile_cubit.dart';
+import '../../features/Profile/data/model/profile_response_model.dart';
 
 Route<dynamic> onGenerateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -33,7 +35,10 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
       );
     case AppRoutes.home:
       return MaterialPageRoute(
-        builder: (context) => const HomeView(),
+        builder: (context) => BlocProvider(
+          create: (context) => ProfileCubit(getIt.get<ProfileRepo>()),
+          child: const HomeView(),
+        ),
         settings: settings,
       );
     case AppRoutes.myRate:
@@ -46,8 +51,16 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
         settings: settings,
       );
     case AppRoutes.profileInfo:
+      final profile = settings.arguments as ProfileDataModel?;
+      if (profile == null) {
+        return MaterialPageRoute(
+          builder: (context) => Scaffold(
+            body: Center(child: Text('Profile data missing')),
+          ),
+        );
+      }
       return MaterialPageRoute(
-        builder: (context) => const ProfileInfoView(),
+        builder: (context) => ProfileInfoView(profile: profile),
         settings: settings,
       );
     case AppRoutes.profits:
@@ -98,8 +111,7 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
                   SendDeliveryOtpCubit(getIt.get<OtpRepo>())..sendDeliveryOtp(),
             ),
             BlocProvider(
-              create: (context) =>
-                  VerifyDeliveryOtpCubit(getIt.get<OtpRepo>()),
+              create: (context) => VerifyDeliveryOtpCubit(getIt.get<OtpRepo>()),
             ),
           ],
           child: OTPView(shipmentId: shipmentId),

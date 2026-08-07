@@ -7,6 +7,10 @@ import 'package:driver_application/features/Profile/presentation/view/widgets/pr
 import 'package:driver_application/generated/assets.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:driver_application/features/Profile/presentation/manager/profile_cubit/profile_cubit.dart';
+import 'package:driver_application/features/Profile/presentation/manager/profile_cubit/profile_state.dart';
+
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
 
@@ -16,15 +20,41 @@ class ProfilePage extends StatelessWidget {
       child: Column(
         children: [
           ProfileCurvedHeader(),
-          ProfileImageSection(),
-          SizedBox(height: 5),
-          Text(
-            'Laiba Ahmar',
-            style: AppTextStyle.semiBold22.copyWith(color: Colors.black),
-          ),
-          Text(
-            'youremail@domain.com | +01 234 567 89',
-            style: AppTextStyle.regular15.copyWith(color: Colors.black),
+          BlocBuilder<ProfileCubit, ProfileState>(
+            builder: (context, state) {
+              String? imageUrl;
+              String name = 'Laiba Ahmar';
+              String emailPhone = 'youremail@domain.com | +01 234 567 89';
+
+              if (state is ProfileSuccess) {
+                final profile = state.profileModel.data;
+                imageUrl = profile?.profilePictureUrl;
+                name = profile?.fullName ?? name;
+                emailPhone = '${profile?.email ?? "youremail@domain.com"} | ${profile?.phoneNumber ?? "+01 234 567 89"}';
+              }
+
+              return Column(
+                children: [
+                  ProfileImageSection(imageUrl: imageUrl),
+                  SizedBox(height: 5),
+                  if (state is ProfileLoading)
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 8.0),
+                      child: CircularProgressIndicator(),
+                    ),
+                  if (state is ProfileFailure)
+                    Text('Failed to load profile', style: TextStyle(color: Colors.red)),
+                  Text(
+                    name,
+                    style: AppTextStyle.semiBold22.copyWith(color: Colors.black),
+                  ),
+                  Text(
+                    emailPhone,
+                    style: AppTextStyle.regular15.copyWith(color: Colors.black),
+                  ),
+                ],
+              );
+            },
           ),
           SizedBox(height: 26),
           Padding(
@@ -35,7 +65,19 @@ class ProfilePage extends StatelessWidget {
                   content: [
                     NonFunctionalProfileRow(
                       onTap: () {
-                        Navigator.pushNamed(context, AppRoutes.profileInfo);
+                        final state = context.read<ProfileCubit>().state;
+                        if (state is ProfileSuccess && state.profileModel.data != null) {
+                          Navigator.pushNamed(
+                            context, 
+                            AppRoutes.profileInfo, 
+                            arguments: state.profileModel.data,
+                          );
+                        } else {
+                          // Optionally show a snackbar if data is not loaded yet
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('جاري تحميل البيانات، يرجى الانتظار')),
+                          );
+                        }
                       },
                       text: 'معلومات شخصية',
                       icon: Assets.iconsProfileInfo,

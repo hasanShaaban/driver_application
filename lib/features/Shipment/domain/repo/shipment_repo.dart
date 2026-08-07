@@ -17,6 +17,10 @@ abstract class OrderRepo {
     required int id,
     required String status,
   });
+  Future<Either<Failure, bool>> cancelShipment({
+    required String comment,
+    required int id,
+  });
   Future<Either<Failure, bool>> updateLocation({
     required double lat,
     required double lng,

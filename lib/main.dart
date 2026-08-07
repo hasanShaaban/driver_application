@@ -10,6 +10,9 @@ import 'package:driver_application/features/Auth/data/data_sources/auth_local_da
 import 'package:hive_flutter/hive_flutter.dart';
 import 'core/functions/on_generate_route.dart';
 import 'generated/l10n.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:driver_application/features/Profile/presentation/manager/profile_cubit/profile_cubit.dart';
+import 'package:driver_application/features/Profile/domain/repo/profile_repo.dart';
 
 import 'core/utils/service_locator.dart';
 import 'core/storage/app_storage.dart';
@@ -63,7 +66,12 @@ class MyApp extends StatelessWidget {
       // push '/' (OnBoardingView) underneath the HomeView when the user is
       // already logged in. With `initialRoute: '/home'`, Flutter would push
       // '/' first, leaving OnBoardingView in the back-stack.
-      home: isLoggedIn ? const HomeView() : const OnBoardingView(),
+      home: isLoggedIn
+          ? BlocProvider(
+              create: (context) => ProfileCubit(getIt.get<ProfileRepo>()),
+              child: const HomeView(),
+            )
+          : const OnBoardingView(),
     );
   }
 }

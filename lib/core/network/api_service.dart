@@ -1,13 +1,16 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:driver_application/core/utils/service_locator.dart';
 import 'package:driver_application/features/Auth/data/data_sources/auth_local_data_source.dart';
+import 'package:flutter/foundation.dart';
 
 class ApiService {
   final Dio _dio;
 
-  final String baseUrl = "http://127.0.0.1:8000/api/";
+  final String baseUrl = "https://127.0.0.1:8443/api/";
 
   ApiService(this._dio) {
     _dio.options.baseUrl = baseUrl;
@@ -42,6 +45,17 @@ class ApiService {
         },
       ),
     );
+
+    configureDio(_dio);
+  }
+  void configureDio(Dio dio) {
+    if (kDebugMode) {
+      (dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
+        final client = HttpClient();
+        client.badCertificateCallback = (cert, host, port) => true;
+        return client;
+      };
+    }
   }
 
   Future<Response> get({
