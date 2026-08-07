@@ -20,6 +20,7 @@ import '../../features/Profile/domain/repo/profile_repo.dart';
 import '../../features/Profile/presentation/manager/ratings_cubit/ratings_cubit.dart';
 import '../../features/Profile/presentation/manager/profile_cubit/profile_cubit.dart';
 import '../../features/Profile/data/model/profile_response_model.dart';
+import '../../features/Profile/presentation/manager/profits_cubit/profits_cubit.dart';
 
 Route<dynamic> onGenerateRoute(RouteSettings settings) {
   switch (settings.name) {
@@ -65,7 +66,10 @@ Route<dynamic> onGenerateRoute(RouteSettings settings) {
       );
     case AppRoutes.profits:
       return MaterialPageRoute(
-        builder: (context) => const ProfitsView(),
+        builder: (context) => BlocProvider(
+          create: (context) => ProfitsCubit(getIt.get<ProfileRepo>())..fetchProfits(),
+          child: const ProfitsView(),
+        ),
         settings: settings,
       );
     case AppRoutes.notifications:

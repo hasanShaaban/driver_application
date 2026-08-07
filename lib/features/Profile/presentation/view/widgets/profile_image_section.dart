@@ -1,10 +1,8 @@
-import 'package:driver_application/generated/assets.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 class ProfileImageSection extends StatelessWidget {
   const ProfileImageSection({super.key, this.imageUrl});
-  
+
   final String? imageUrl;
 
   @override
@@ -16,7 +14,7 @@ class ProfileImageSection extends StatelessWidget {
           width: 120,
           height: 120,
           decoration: BoxDecoration(
-            shape: BoxShape.circle, 
+            shape: BoxShape.circle,
             color: Colors.grey,
             image: imageUrl != null && imageUrl!.isNotEmpty
                 ? DecorationImage(
